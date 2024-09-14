@@ -9,14 +9,14 @@ void check_cuda(cudaError_t result, char const *const func, const char *const fi
     }
 }
 
-void start_timer(cudaEvent_t *start) {
+void start_timer(cudaEvent_t *start, cudaEvent_t *stop) {
     CHECK_CUDA_ERROR(cudaEventCreate(start));
+    CHECK_CUDA_ERROR(cudaEventCreate(stop));
     CHECK_CUDA_ERROR(cudaEventRecord(*start));
 }
 
 float stop_timer(cudaEvent_t start, cudaEvent_t stop) {
     float milliseconds = 0;
-    CHECK_CUDA_ERROR(cudaEventCreate(&stop));
     CHECK_CUDA_ERROR(cudaEventRecord(stop));
     CHECK_CUDA_ERROR(cudaEventSynchronize(stop));
     CHECK_CUDA_ERROR(cudaEventElapsedTime(&milliseconds, start, stop));

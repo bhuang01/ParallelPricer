@@ -4,18 +4,24 @@ INCLUDES := -I./include
 
 TARGET := monte_carlo_sim
 
-SRCS := main.cu random_generator.cu stock_simulation.cu utils.cu
-OBJS := $(SRCS:.cu=.o)
+SRC_DIR := src
+OBJ_DIR := obj
+
+SRCS := $(wildcard $(SRC_DIR)/*.cu)
+OBJS := $(SRCS:$(SRC_DIR)/%.cu=$(OBJ_DIR)/%.o)
 
 all: $(TARGET)
 
 $(TARGET): $(OBJS)
 	$(NVCC) $(NVCC_FLAGS) -o $@ $^
 
-%.o: src/%.cu
+$(OBJ_DIR)/%.o: $(SRC_DIR)/%.cu | $(OBJ_DIR)
 	$(NVCC) $(NVCC_FLAGS) $(INCLUDES) -c $< -o $@
 
+$(OBJ_DIR):
+	mkdir -p $@
+
 clean:
-	rm -f $(TARGET) $(OBJS)
+	rm -rf $(TARGET) $(OBJ_DIR)
 
 .PHONY: all clean
